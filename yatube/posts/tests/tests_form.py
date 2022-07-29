@@ -3,8 +3,9 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+
 from ..forms import PostForm
-from ..models import Post, Group
+from ..models import Group, Post
 
 User = get_user_model()
 
@@ -34,7 +35,8 @@ class TaskURLTests(TestCase):
 
     def test_create_post(self):
         """Валидная форма создает запись в Posts."""
-        posts_count = Post.objects.count()
+        Post.objects.all().delete()
+        self.assertEqual(Post.objects.count(), 0)
 
         form_data = {
             'text': 'Тестовый текст',
@@ -49,10 +51,10 @@ class TaskURLTests(TestCase):
                 'posts:profile', kwargs={'username': 'author'}
             )
         )
-        self.assertEqual(Post.objects.count(), posts_count + 1)
+        self.assertEqual(Post.objects.count(), 1)
         self.assertTrue(
             Post.objects.filter(
-                text='Тестовый текст',
+                text=form_data['text'],
             ).exists()
         )
 

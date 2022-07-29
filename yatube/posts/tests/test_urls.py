@@ -1,9 +1,11 @@
 # posts/tests/test_urls.py
-from django.contrib.auth import get_user_model
-from django.test import TestCase, Client
-from ..models import Post, Group
 from http import HTTPStatus
+
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
+
+from ..models import Group, Post
 
 User = get_user_model()
 
@@ -15,7 +17,7 @@ class StaticURLTests(TestCase):
         # Делаем запрос к главной странице и проверяем статус
         response = guest_client.get('/')
         # Утверждаем, что для прохождения теста код должен быть равен 200
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
 
 class URLTests(TestCase):

@@ -1,11 +1,11 @@
 # tests/tests_views.py
 
+from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from django import forms
 
-from ..models import Post, Group
+from ..models import Group, Post
 
 User = get_user_model()
 
@@ -167,13 +167,13 @@ class PaginatorViewsTest(TestCase):
             slug='test_slug',
             description='Тестовое описание',
         )
+
+        bulk_post = []
         for i in range(0, 13):
-            cls.post = Post.objects.create(
-                author=cls.author,
-                group=cls.group,
-                text=f'Тестовый текст {i}',
-                pub_date='14.07.2022',
-            )
+            bulk_post.append(Post(text=f'Тестовый текст {i}',
+                                  group=cls.group,
+                                  author=cls.author))
+        Post.objects.bulk_create(bulk_post)
 
     def test_first_page_index_ten_records(self):
         response = self.client.get(reverse('posts:posts_list'))
